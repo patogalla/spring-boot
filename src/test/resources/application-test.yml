@@ -1,0 +1,68 @@
+## Base Configuration
+spring:
+    profiles:
+        active: test
+    application:
+        name: patogalla-api
+    output:
+        ansi:
+            enabled: ALWAYS
+    autoconfigure:
+        exclude:
+            - org.springframework.cloud.aws.autoconfigure.messaging.MessagingAutoConfiguration
+            - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
+    #spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        # stringtype=unspecified this connection parameter makes Hibernate work correctly with CITEXT postgres type
+        # Removing this property will break the application, especially the parts related to Email and UserName case insensitivity
+        url: jdbc:h2:mem:test
+        username: sa
+        password: ''
+        driver-class-name: org.h2.Driver
+        hikari:
+            connection-timeout : 5000
+            idle-timeout       : 420000
+            minimum-idle       : 5
+            max-lifetime       : 1800000
+            maximum-pool-size  : 20
+            pool-name          : HikariConPool
+
+    #spring:
+    jpa:
+        hibernate:
+            ddl-auto:   update
+        show-sql: true
+        database: H2
+        properties:
+            hibernate:
+                dialect : com.patogalla.api.CustomHSQLDialect
+
+    #spring:
+    http:
+        multipart:
+            max-file-size     : 10MB
+            max-request-size  : 10MB
+    flyway:
+        locations: classpath:db/migration/test
+        baseline-on-migrate: true
+
+management:
+    context-path    : "/.watch"
+    security:
+        enabled     : false
+
+logging:
+    level:
+        root: DEBUG
+
+
+
+# Base Configuration
+patogalla-api:
+    email:
+        from                                : "test@test.com"
+    # The key MUST be overwritten in production
+
+
+

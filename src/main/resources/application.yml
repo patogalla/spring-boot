@@ -1,0 +1,95 @@
+## Base Configuration
+spring:
+    profiles:
+        active: local
+    application:
+        name: patogalla-api
+    output:
+        ansi:
+            enabled: ALWAYS
+    autoconfigure:
+        exclude:
+            - org.springframework.cloud.aws.autoconfigure.messaging.MessagingAutoConfiguration
+            - org.springframework.cloud.aws.autoconfigure.context.ContextStackAutoConfiguration
+    #spring:
+    datasource:
+        type: com.zaxxer.hikari.HikariDataSource
+        # stringtype=unspecified this connection parameter makes Hibernate work correctly with CITEXT postgres type
+        # Removing this property will break the application, especially the parts related to Email and UserName case insensitivity
+        url: jdbc:postgresql://localhost:5432/patogalla?stringtype=unspecified
+        driver-class-name: org.postgresql.Driver
+        username: postgres
+        password: postgres
+        hikari:
+            connection-timeout : 5000
+            idle-timeout       : 420000
+            minimum-idle       : 5
+            max-lifetime       : 1800000
+            maximum-pool-size  : 20
+            pool-name          : HikariConPool
+
+    #spring:
+    jpa:
+        show-sql: true
+        database: POSTGRESQL
+        properties:
+            hibernate:
+                temp:
+                    use_jdbc_metadata_defaults: false
+                jdbc:
+                    lob:
+                        non_contextual_creation: true
+
+    #spring:
+    http:
+        multipart:
+            max-file-size     : 10MB
+            max-request-size  : 10MB
+
+management:
+    context-path    : "/.watch"
+    security:
+        enabled     : false
+
+logging:
+    level:
+        root: INFO
+
+flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+
+# Base Configuration
+patogalla-api:
+    # The key MUST be overwritten in production
+    user:
+        token:
+            jwtSecretKey                : "--replace--"
+            tokenTtlDays                : 7
+            activationTokenTtlDays      : 1
+            tokenCacheTtlSeconds        : 60
+            tokenCacheMaxSize           : 1000
+    async:
+        core-pool-size                    : 10
+        max-pool-size                     : 25
+        queue-capacity                    : 25
+        keep-alive-in-seconds             : 2
+    cors:
+        allowed-origins                   : "*"
+    google:
+        apikey                            : "--replace--"
+# AWS Cloud
+cloud:
+    aws:
+        region:
+            static: us-west-2
+        credentials:
+            accessKey: "--replace--"                                #            has to be provided as -Dcloud.aws.credentials.accessKey=xxx
+            secretKey: "--replace--"                                #                        ...    as -Dcloud.aws.credentials.secretKey=yyy
+            instanceProfile: false
+        stack:
+            auto: false
+
+
+
